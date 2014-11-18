@@ -1,6 +1,6 @@
-ADB & Android shell cheatsheet
+ADB & Android shell cheat sheet
 ==============
 
-Cheat Sheet for ADB and Android shell. Useful for Andorid malware monitoring & forensic.
+Cheat sheet for ADB and Android shell. Useful for Andorid malware monitoring & forensic.
 
-Checkout my blog at http://maldr0id.blogspot.com
+Checkout my blog at http://maldr0id.blogspot.com.
