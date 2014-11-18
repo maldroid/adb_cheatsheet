@@ -1,0 +1,230 @@
+\documentclass[11pt,landscape,a4paper]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\usepackage{scrextend}
+
+%\ifthenelse{\lengthtest { \paperwidth = 11in}}
+%	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+%	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+%		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+%		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+%	}
+\geometry{top=2cm,left=1cm,right=1cm,bottom=2cm}
+% Turn off header and footer
+\pagestyle{empty}
+ 
+
+% Redefine section commands to use less space
+%\makeatletter
+%\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+%                                {-1ex plus -.5ex minus -.2ex}%
+%                                {0.5ex plus .2ex}%x
+%                                {\normalfont\large\bfseries}}
+%\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+%                                {-1explus -.5ex minus -.2ex}%
+%                                {0.5ex plus .2ex}%
+%                                {\normalfont\normalsize\bfseries}}
+%\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+%                                {-1ex plus -.5ex minus -.2ex}%
+%                                {1ex plus .2ex}%
+%                                {\normalfont\small\bfseries}}
+%\makeatother
+
+% Define BibTeX command
+%\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{3}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \Large{\textbf{$\mathcal{A}$ndroid $\mathcal{D}$ebug $\mathcal{B}$ridge\\ Cheat Sheet}} \\
+\end{center}
+
+\section{Selecting a device}
+\begin{tabular}{@{}ll@{}}
+\verb!adb devices!    & List of devices \\
+& \hspace*{3mm} by serial number. \\
+\verb!adb devices -l!    & List of devices\\
+&  \hspace*{3mm} by product/model. \\
+\verb!adb -s <serial> ...!  & Command line selection. \\
+\verb!export ANDROID_SERIAL=<serial>! & Env. variable selection. \\
+\end{tabular}
+
+\vspace*{2mm}
+
+If a command starts with \$ it has to be run from the Android shell or via \verb!adb shell <command>!, or even better \verb!adb shell <command> | less!.
+
+\subsection{Package installation}
+\newlength{\MyLen}
+%\settowidth{\MyLen}{\texttt{letterpaper}/\texttt{a4paper} \ }
+%\begin{tabular}{@{}p{\the\MyLen}%
+%                @{}p{\linewidth-\the\MyLen}@{}}
+\begin{tabular}{@{}ll@{}}
+\texttt{adb install <apk>} & Installs app. \\
+\texttt{\$ pm install <path>}  &  Install app from phone path. \\
+\texttt{\$ pm install -r <path>}  &  Reinstall app from phone path. \\
+\texttt{\$ pm uninstall <name>}   & Remove the app. \\
+\texttt{\$ pm get-install-location}  &  Install location:\\
+& \texttt{0} - Auto \\
+& \texttt{1} - Internal \\
+& \texttt{2} - External \\
+\end{tabular}
+
+
+\subsection{Package info}
+\begin{tabular}{@{}ll@{}}
+\texttt{\$ pm list packages} & List package names. \\
+\texttt{\$ pm list packages -f} & As above + path to apks. \\
+\texttt{\$ pm list packages -3} & Only third party packages. \\
+\texttt{\$ pm list packages -s} & Only system packages. \\
+\texttt{\$ pm list packages -u} & Also uninstalled packages. \\
+\texttt{\$ dumpsys package packages} & List info on all apps. \\
+\texttt{\$ pm dump <name>}   & List info on one package. \\
+\texttt{\$ pm path <package>}  &  Path to the apk file.\\
+\end{tabular}
+
+\subsection{Permissions}
+%\settowidth{\MyLen}{\texttt{multicol} }
+%\begin{tabular}{@{}p{\the\MyLen}%
+%                @{}p{\linewidth-\the\MyLen}@{}}
+\begin{tabular}{@{}ll@{}}
+\texttt{\$ pm permission groups}  &  Permission groups definitions. \\
+\texttt{\$ pm list permissions -g -f}  &  List permissions details.\\
+\end{tabular}
+
+\subsection{File operations}
+\begin{tabular}{@{}ll@{}}
+\texttt{adb push <local> <remote>} & Copy file/dir to device.\\
+\texttt{adb pull <remote> [<local>]}  & Copy file/dir from device.\\
+\texttt{adb backup -f <file>}  & Backup the phone.\\
+%\texttt{adb sync [<directory>]} & Copy host->device only if changed.\\
+\end{tabular}
+
+\vspace*{2mm}
+
+If you want to access the private package files just use \verb!run-as <package> cat <file>!.
+
+\subsection{Paths}
+\begin{tabular}{@{}ll@{}}
+\texttt{/data/data/<package>} & App data, as described below.\\
+\hspace*{4mm} \texttt{databases/} & App databases.\\
+\hspace*{4mm} \texttt{shared\_prefs/} & Shared preferences.\\
+\texttt{/data/app} & APK files installed by user.\\
+\texttt{/system/app} & Pre-installed APK files.\\
+\texttt{/mnt/asec} & Encrypted apps (App2SD).\\
+\texttt{/mnt/emmc} & Internal SD Card.\\
+\texttt{/mnt/sdcard} & External/Internal SD Card.\\
+\texttt{/mnt/sdcard/external\_sd} & External SD Card.\\
+\end{tabular}
+
+\parbox{0.25\textwidth}{
+\subsection{Phone info}
+%\settowidth{\MyLen}{\texttt{letterpaper}/\texttt{a4paper} \ }
+\texttt{\$ sqlite3 /data/data/ com.android.providers.settings /databases/settings.db  .dump}
+%\begin{tabular}{@{}p{\the\MyLen}%
+%                @{}p{\linewidth-\the\MyLen}@{}}
+\begin{tabular}{@{}ll@{}}
+\texttt{} & Dump phone settings. \\
+\texttt{\$ getprop} & Get properties (e.g. model). \\
+\texttt{\$ dumpsys iphonesubinfo} & Get the IMEI.\\
+\texttt{adb get-serialno} & Get the serial number.\\
+\texttt{\$ dumpsys battery} & Battery status.\\
+\texttt{\$ pm list users}  &  Lists phone users (4.1+). \\
+\texttt{\$ pm list features}  &  List phone features.\\
+\end{tabular}}
+
+\subsection{Services \& activities}
+\begin{tabular}{@{}ll@{}}
+\texttt{\$ service list} & List all services.\\
+\texttt{\$ dumpsys activity <package>/<activity>} & Dump activity info.\\
+%\texttt{adb sync [<directory>]} & Copy host->device only if changed.\\
+\end{tabular}
+
+\subsection{Logs}
+
+All logs are accessed by using either \texttt{\$ logcat} or \texttt{adb logcat}. 
+
+\vspace*{2mm}
+
+Useful options are:
+
+\begin{tabular}{@{}ll@{}}
+\texttt{-d} & Only dump logs (do not block).\\
+\texttt{-c} & Flush the buffers.\\
+\texttt{-b <buffer>} & Buffer to display (default: system, main).\\
+\texttt{<tag>[:priority]} & Filter spec at the end of logcat.\\
+\end{tabular}
+
+\vspace*{2mm}
+
+Available priorities are:
+
+\begin{addmargin}{10mm}
+\begin{tabular}{@{}ll@{}}
+\texttt{V} & Verbose\\
+\texttt{D} & Debug\\
+\texttt{I} & Info\\
+\texttt{W} & Warn\\
+\texttt{E} & Error\\
+\texttt{F} & Fatal\\
+\texttt{S} & Silent (suppress all output)\\
+\end{tabular}
+\end{addmargin}
+
+
+\subsection{Miscellaneous}
+\begin{tabular}{@{}ll@{}}
+\texttt{\$ screencap -p <path>.png} & Screenshot (save to path on device).\\
+\texttt{\$ screenrecord <path>.mp4} & Screen capture (path on device).\\
+\end{tabular}
+
+\subsection{ADB daemon}
+\texttt{adbd} runs on TCP/5037.
+
+\vspace*{1mm}
+
+\begin{tabular}{@{}ll@{}}
+
+\texttt{adb kill-server}  & Kill the server if it is running.\\
+\texttt{adb start-server} & Ensure that there is a server running.\\
+\texttt{adb root} & Restarts the adbd with root permissions.\\
+\end{tabular}
+
+\rule{0.3\linewidth}{0.25pt}
+\scriptsize
+
+by \href{http://www.twitter.com/maldr0id}{@maldr0id}
+
+based on \LaTeX{} cheat sheet by Winston Chang
+
+\href{http://www.stdout.org/~winston/latex/}{http://www.stdout.org/$\sim$winston/latex/}
+
+
+\end{multicols}
+\end{document}
