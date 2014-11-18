@@ -12,7 +12,7 @@
 %		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
 %		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
 %	}
-\geometry{top=2cm,left=1cm,right=1cm,bottom=2cm}
+\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm}
 % Turn off header and footer
 \pagestyle{empty}
  
@@ -40,7 +40,7 @@
 % Don't print section numbers
 \setcounter{secnumdepth}{0}
 
-
+\linespread{1.1}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt plus 0.5ex}
 
@@ -58,9 +58,9 @@
 % These lengths are set only within the two main columns
 %\setlength{\columnseprule}{0.25pt}
 \setlength{\premulticols}{1pt}
-\setlength{\postmulticols}{1pt}
-\setlength{\multicolsep}{1pt}
-\setlength{\columnsep}{2pt}
+\setlength{\postmulticols}{2pt}
+\setlength{\multicolsep}{13pt}
+\setlength{\columnsep}{13pt}
 
 \begin{center}
      \Large{\textbf{$\mathcal{A}$ndroid $\mathcal{D}$ebug $\mathcal{B}$ridge\\ Cheat Sheet}} \\
@@ -122,9 +122,13 @@ If a command starts with \$ it has to be run from the Android shell or via \verb
 \begin{tabular}{@{}ll@{}}
 \texttt{adb push <local> <remote>} & Copy file/dir to device.\\
 \texttt{adb pull <remote> [<local>]}  & Copy file/dir from device.\\
-\texttt{adb backup -f <file>}  & Backup the phone.\\
-%\texttt{adb sync [<directory>]} & Copy host->device only if changed.\\
 \end{tabular}
+\begin{tabular}{@{}ll@{}}
+\texttt{adb backup -f <file>  [<packages...>]}  & \\
+\hspace*{5cm}Backup the phone.&\\
+\end{tabular}
+%\texttt{adb sync [<directory>]} & Copy host->device only if changed.\\
+
 
 \vspace*{2mm}
 
@@ -146,7 +150,9 @@ If you want to access the private package files just use \verb!run-as <package> 
 \parbox{0.25\textwidth}{
 \subsection{Phone info}
 %\settowidth{\MyLen}{\texttt{letterpaper}/\texttt{a4paper} \ }
-\texttt{\$ sqlite3 /data/data/ com.android.providers.settings /databases/settings.db  .dump}
+\texttt{\$ sqlite3 /data/data/}
+\hspace*{1.7cm}\texttt{com.android.providers.settings}
+\hspace*{1.7cm}\texttt{/databases/settings.db  .dump}
 %\begin{tabular}{@{}p{\the\MyLen}%
 %                @{}p{\linewidth-\the\MyLen}@{}}
 \begin{tabular}{@{}ll@{}}
@@ -158,17 +164,47 @@ If you want to access the private package files just use \verb!run-as <package> 
 \texttt{\$ pm list users}  &  Lists phone users (4.1+). \\
 \texttt{\$ pm list features}  &  List phone features.\\
 \end{tabular}}
-
+\parbox{0.33\textwidth}{
 \subsection{Services \& activities}
 \begin{tabular}{@{}ll@{}}
-\texttt{\$ service list} & List all services.\\
-\texttt{\$ dumpsys activity <package>/<activity>} & Dump activity info.\\
+\texttt{\$ service list} & \hspace*{2.3cm}List all services.\\
+\end{tabular}
+\begin{tabular}{@{}ll@{}}
+\texttt{\$ dumpsys activity <package>/<activity>} & \\
+\hspace*{5cm} Activity info. & \\
 %\texttt{adb sync [<directory>]} & Copy host->device only if changed.\\
 \end{tabular}
+}
 
+\vspace*{2mm}
+\parbox{0.30\textwidth}{
+Activity Manager usage: 
+
+\vspace*{1mm}
+
+\texttt{\$ am start|startservice|broadcast <INTENT>}
+\hspace*{6cm}\texttt{[<COMPONENT>]}
+
+\vspace*{1mm}
+
+where \texttt{<INTENT>} is specified with following options:
+
+\vspace*{1mm}
+
+\begin{tabular}{@{}ll@{}}
+\texttt{-a <ACTION>} & e.g. \texttt{android.intent.action.VIEW}\\
+\texttt{-c <CATEGORY>} & e.g. \texttt{android.intent.category.LAUNCHER}\\
+\end{tabular}
+}
 \subsection{Logs}
 
-All logs are accessed by using either \texttt{\$ logcat} or \texttt{adb logcat}. 
+All logs are accessed by using either 
+
+\texttt{\$ logcat [options] [filter] [filter] $\ldots$} 
+
+or 
+
+\texttt{adb logcat [options] [filter] [filter] $\ldots$}
 
 \vspace*{2mm}
 
@@ -178,7 +214,7 @@ Useful options are:
 \texttt{-d} & Only dump logs (do not block).\\
 \texttt{-c} & Flush the buffers.\\
 \texttt{-b <buffer>} & Buffer to display (default: system, main).\\
-\texttt{<tag>[:priority]} & Filter spec at the end of logcat.\\
+\texttt{<tag>[:priority]} & \texttt{filter} spec at the end of command.\\
 \end{tabular}
 
 \vspace*{2mm}
@@ -197,10 +233,17 @@ Available priorities are:
 \end{tabular}
 \end{addmargin}
 
+\vspace*{2mm}
+
+Other useful log information:
+\begin{tabular}{@{}ll@{}}
+\texttt{\$ dumpstate} & Dump current phone state.\\
+\texttt{\$ dumpsys} & Dump all system data.\\
+\end{tabular}
 
 \subsection{Miscellaneous}
 \begin{tabular}{@{}ll@{}}
-\texttt{\$ screencap -p <path>.png} & Screenshot (save to path on device).\\
+\texttt{\$ screencap -p <path>.png} & Screenshot (saved on device).\\
 \texttt{\$ screenrecord <path>.mp4} & Screen capture (path on device).\\
 \end{tabular}
 
@@ -213,13 +256,13 @@ Available priorities are:
 
 \texttt{adb kill-server}  & Kill the server if it is running.\\
 \texttt{adb start-server} & Ensure that there is a server running.\\
-\texttt{adb root} & Restarts the adbd with root permissions.\\
+\texttt{adb root} & Restarts the \texttt{adbd} with root permissions.\\
 \end{tabular}
 
 \rule{0.3\linewidth}{0.25pt}
 \scriptsize
 
-v 0.1 by \href{http://www.twitter.com/maldr0id}{@maldr0id}
+v 0.2 by \href{http://www.twitter.com/maldr0id}{@maldr0id}
 
 based on \LaTeX{} cheat sheet by Winston Chang
 
