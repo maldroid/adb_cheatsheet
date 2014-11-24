@@ -194,8 +194,20 @@ where \texttt{<INTENT>} is specified with following options:
 \begin{tabular}{@{}ll@{}}
 \texttt{-a <ACTION>} & e.g. \texttt{android.intent.action.VIEW}\\
 \texttt{-c <CATEGORY>} & e.g. \texttt{android.intent.category.LAUNCHER}\\
-\end{tabular}
+\end{tabular}}
+
+\vspace*{2mm}
+
+\columnbreak
+\subsection{Common actions}
+\parbox{0.30\textwidth}{
+To open the URL:
+
+\vspace*{1mm}
+
+\texttt{\$ am start -a android.intent.action.VIEW -d URL}
 }
+
 \subsection{Logs}
 
 All logs are accessed by using either 
